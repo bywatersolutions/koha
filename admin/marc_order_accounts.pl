@@ -74,7 +74,7 @@ if( $op eq 'acct_form') {
     show_account($input, $template);
     $template->param( delete_acct => 1);
 } else {
-    if( $op eq 'save' ) {
+    if( $op eq 'cud-save' ) {
 
         my $fields = {
             id                 => scalar $input->param('id'),
@@ -102,7 +102,7 @@ if( $op eq 'acct_form') {
             my $new_account = Koha::MarcOrderAccount->new($fields);
             $new_account->store;
         }
-    } elsif ($op eq 'delete_confirmed') {
+    } elsif ($op eq 'cud-delete_confirmed') {
         my $acct_id = $input->param('id');
         my $acct = Koha::MarcOrderAccounts->find($acct_id);
         $acct->delete;

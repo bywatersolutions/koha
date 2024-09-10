@@ -85,7 +85,8 @@ MARC Order Accounts
                         [% END %]
                     </h1>
                     <form action="/cgi-bin/koha/admin/marc_order_accounts.pl" name="Actform" method="post">
-                        <input type="hidden" name="op" value="save" />
+                        [% INCLUDE 'csrf-token.inc' %]
+                        <input type="hidden" name="op" value="cud-save" />
                         [% IF account %]
                         <input type="hidden" name="id" value="[% account.id | html %]" />
                         [% END %]
@@ -340,7 +341,8 @@ MARC Order Accounts
                         <form action="/cgi-bin/koha/admin/marc_order_accounts.pl" method="post">
                             <table>
                             </table>
-                            <input type="hidden" name="op" value="delete_confirmed" />
+                            [% INCLUDE 'csrf-token.inc' %]
+                            <input type="hidden" name="op" value="cud-delete_confirmed" />
                             <input type="hidden" name="id" value="[% account.id | html %]" />
                             <button type="submit" class="approve"><i class="fa fa-fw fa-check"></i> Yes, delete</button>
                         </form>

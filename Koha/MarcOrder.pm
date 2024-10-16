@@ -1287,6 +1287,7 @@ sub _create_item_fields_from_syspref {
         replacementprices => \@replacementprices,
         itemcallnumbers   => \@itemcallnumbers,
         c_quantity        => $marc_fields_to_order->{quantity},
+        c_replacement_price=> $marc_fields_to_order->{replacementprice},
         c_budget_code     => $marc_fields_to_order->{budget_code},
         c_price           => $marc_fields_to_order->{price},
         c_discount        => $marc_fields_to_order->{discount},

@@ -1270,6 +1270,13 @@ sub _create_item_fields_from_syspref {
         }
     }
 
+    my $c_budget;
+    my $c_budget_id;
+    if( $marc_fields_to_order->{budget_code} ) {
+        my $c_budget = GetBudgetByCode($marc_fields_to_order->{budget_code});
+        $c_budget_id = $c_budget->{budget_id} if $c_budget;
+    }
+
     my $item_fields = {
         quantity          => scalar(@homebranches),
         homebranches      => \@homebranches,
@@ -1289,6 +1296,7 @@ sub _create_item_fields_from_syspref {
         c_quantity        => $marc_fields_to_order->{quantity},
         c_replacement_price=> $marc_fields_to_order->{replacementprice},
         c_budget_code     => $marc_fields_to_order->{budget_code},
+        c_budget_id       => $c_budget_id,
         c_price           => $marc_fields_to_order->{price},
         c_discount        => $marc_fields_to_order->{discount},
         c_sort1           => $marc_fields_to_order->{sort1},

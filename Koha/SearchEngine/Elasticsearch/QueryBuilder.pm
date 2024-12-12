@@ -200,18 +200,25 @@ sub build_query {
     if ($options{whole_record}) {
         push @$fields, 'marc_data_array.*';
     }
-    $res->{query} = {
-        query_string => {
+    my $query_string = {
             query            => $query,
             fuzziness        => $fuzzy_enabled ? 'auto' : '0',
             default_operator => 'AND',
             fields           => $fields,
             lenient          => JSON::true,
             analyze_wildcard => JSON::true,
+        };
+    $query_string->{type} = 'cross_fields' if C4::Context->preference('ElasticsearchCrossFields');
+
+    $res->{query} = {
+        bool => {
+            must => [
+                {query_string => $query_string}
+            ]
         }
     };
-    $res->{query}->{query_string}->{type} = 'cross_fields' if C4::Context->preference('ElasticsearchCrossFields');
 
+    $res->{query}->{bool}->{should} = [ {match => { 'title-cover' => { query => $options{simple_query} } }}] if $options{simple_query};
     if ( $options{sort} ) {
         foreach my $sort ( @{ $options{sort} } ) {
             my ( $f, $d ) = @$sort{qw/ field direction /};
@@ -262,6 +269,9 @@ sub build_query_compat {
         $lang, $params )
       = @_;
 
+    warn Data::Dumper::Dumper("rat", $operators," rand", $operands," ind", $indexes);
+    my $simple_query;
+    $simple_query = $operands->[0] if ( scalar @{$operands} == 1 && $operators && $indexes && !@{$operators} && !@{$indexes} );
     my $query;
     my $query_str = '';
     my $search_param_query_str = '';
@@ -314,6 +324,7 @@ sub build_query_compat {
         $options{is_opac} = $params->{is_opac};
         $options{weighted_fields} = $params->{weighted_fields};
         $options{whole_record} = $params->{whole_record};
+        $options{simple_query} = $simple_query;
         $query = $self->build_query( $query_str, %options );
     }
 
